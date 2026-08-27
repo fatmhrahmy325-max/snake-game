@@ -1,0 +1,3765 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+
+<title>🐍 Snake Mobile | محمد حسین</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  width:100%;
+  min-height:100%;
+  overflow-x:hidden;
+}
+
+body{
+  min-height:100svh;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  background:
+    radial-gradient(circle at top,#173c28,#06140d 55%,#020604);
+  color:white;
+  font-family:Tahoma,Arial,sans-serif;
+  padding:
+    max(10px,env(safe-area-inset-top))
+    8px
+    max(15px,env(safe-area-inset-bottom));
+}
+
+.container{
+  width:100%;
+  max-width:680px;
+  padding:14px;
+  margin:auto 0;
+  text-align:center;
+  background:rgba(0,0,0,.45);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:25px;
+  box-shadow:0 0 45px rgba(0,255,100,.15);
+  backdrop-filter:blur(15px);
+}
+
+h1{
+  margin:2px 0 12px;
+  color:#6dff9a;
+  font-size:clamp(23px,7vw,34px);
+  text-shadow:0 0 18px #00ff66;
+}
+
+.top-info{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:6px;
+  margin-bottom:9px;
+}
+
+.info{
+  background:rgba(255,255,255,.07);
+  padding:8px 3px;
+  border-radius:12px;
+  font-size:12px;
+}
+
+.info b{
+  font-size:17px;
+}
+
+.options{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+}
+
+.options label{
+  display:block;
+  font-size:12px;
+  margin-bottom:2px;
+}
+
+select{
+  width:100%;
+  padding:9px 5px;
+  border:0;
+  border-radius:11px;
+  background:#10291b;
+  color:white;
+  font-size:13px;
+  outline:none;
+}
+
+.game-wrap{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  margin-top:9px;
+}
+
+canvas{
+  display:block;
+  width:min(92vw,500px);
+  height:min(92vw,500px);
+  max-width:500px;
+  max-height:500px;
+
+  border:3px solid #39ff88;
+  border-radius:18px;
+  background:#06140d;
+  box-shadow:0 0 28px rgba(0,255,100,.3);
+
+  touch-action:none;
+}
+
+.buttons{
+  display:flex;
+  justify-content:center;
+  gap:6px;
+  margin-top:7px;
+}
+
+button{
+  border:0;
+  border-radius:13px;
+  padding:10px 14px;
+  min-height:42px;
+  cursor:pointer;
+  font-weight:bold;
+  font-size:13px;
+  transition:.15s;
+  user-select:none;
+}
+
+button:active{
+  transform:scale(.94);
+}
+
+.start{
+  background:#27e878;
+  color:#05200f;
+}
+
+.shopBtn{
+  background:#ffd43b;
+  color:#352900;
+}
+
+.mobile-controls{
+  width:180px;
+  margin:10px auto 2px;
+  display:grid;
+  grid-template-columns:repeat(3,58px);
+  grid-template-rows:repeat(3,52px);
+  gap:3px;
+  direction:ltr;
+}
+
+.mobile-controls button{
+  padding:0;
+  min-height:0;
+  font-size:23px;
+  border-radius:14px;
+  background:rgba(39,232,120,.16);
+  border:1px solid rgba(39,232,120,.35);
+  color:#8dffb0;
+  box-shadow:0 0 10px rgba(0,255,100,.08);
+}
+
+.mobile-controls button:active{
+  background:#27e878;
+  color:#05200f;
+}
+
+.up{grid-column:2;grid-row:1}
+.left{grid-column:1;grid-row:2}
+.down{grid-column:2;grid-row:3}
+.right{grid-column:3;grid-row:2}
+
+.shop{
+  display:none;
+  margin-top:12px;
+  padding:12px;
+  border-radius:18px;
+  background:rgba(0,0,0,.4);
+}
+
+.shop h2{
+  color:#ffd43b;
+  font-size:21px;
+  margin:4px 0 12px;
+  text-shadow:0 0 10px #ffd43b;
+}
+
+.skins{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+}
+
+.skin{
+  padding:11px 6px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:15px;
+}
+
+.skin h3{
+  font-size:14px;
+  margin:7px 0 4px;
+}
+
+.skin p{
+  font-size:12px;
+  margin:4px;
+  color:#ccc;
+}
+
+.skin .ability{
+  color:#6dff9a;
+  font-size:11px;
+  min-height:30px;
+}
+
+.skin button{
+  width:95%;
+  font-size:11px;
+  padding:8px 4px;
+  min-height:36px;
+}
+
+.skin.legendary{
+  border-color:rgba(255,215,0,.5);
+  box-shadow:inset 0 0 18px rgba(255,215,0,.05);
+}
+
+.preview{
+  width:48px;
+  height:48px;
+  margin:auto;
+  border-radius:50%;
+  box-shadow:0 0 17px currentColor;
+}
+
+.green{background:#27e878;color:#27e878}
+.red{background:#ff3b3b;color:#ff3b3b}
+.blue{background:#3699ff;color:#3699ff}
+.yellow{background:#ffd43b;color:#ffd43b}
+
+.blackgold{
+  background:linear-gradient(135deg,#050505 50%,#ffd43b 50%);
+  color:#ffd43b;
+}
+
+.redshadow{
+  background:linear-gradient(135deg,#ff3030 50%,#090909 50%);
+  color:#ff3030;
+}
+
+.cyber{
+  background:linear-gradient(135deg,#269cff 50%,#9b35ff 50%);
+  color:#8b4dff;
+}
+
+.toxic{
+  background:linear-gradient(135deg,#27e878 50%,#050505 50%);
+  color:#27e878;
+}
+
+.ice{
+  background:linear-gradient(135deg,#fff 50%,#55d9ff 50%);
+  color:#55d9ff;
+}
+
+.rainbow{
+  background:linear-gradient(
+    135deg,
+    red,orange,yellow,#27e878,#3699ff,#a34cff
+  );
+  color:#a34cff;
+}
+
+.galaxy{
+  background:
+    radial-gradient(circle at 30% 30%,white 1px,transparent 2px),
+    radial-gradient(circle at 70% 60%,#a45cff 1px,transparent 2px),
+    linear-gradient(135deg,#050014,#25104b,#050014);
+  color:#9b5cff;
+}
+
+.inferno{
+  background:linear-gradient(
+    135deg,#ff1717,#ff6a00,#ffd43b,#7b0909
+  );
+  color:#ff5a00;
+}
+
+
+
+.secret-skin{
+  border-color:rgba(255,255,255,.25)!important;
+}
+
+
+/* =========================
+   Adventure / Boss / Evolution
+========================= */
+.adventure-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:8px;
+}
+.adventure-card{
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:15px;
+  padding:10px;
+  text-align:right;
+}
+.adventure-card h3{margin:0 0 7px;color:#ffd43b;font-size:14px}
+.adventure-card p{margin:4px 0;font-size:10px;line-height:1.7;color:#ddd}
+.adventure-card button{width:100%;margin-top:5px}
+.skill-row{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:6px;margin:5px 0;padding:6px;border-radius:9px;
+  background:rgba(0,0,0,.18);font-size:10px;
+}
+.skill-row button{width:auto;min-width:70px;padding:5px}
+.achievement{
+  margin:4px 0;padding:6px;border-radius:9px;
+  background:rgba(0,0,0,.18);font-size:10px;
+}
+.achievement.locked{opacity:.55}
+.achievement.done{border:1px solid rgba(39,232,120,.35)}
+.boss-hud{
+  position:fixed;left:50%;top:8px;transform:translateX(-50%);
+  z-index:30;width:min(430px,90vw);display:none;
+  padding:8px 12px;border-radius:14px;
+  background:rgba(20,0,0,.85);border:1px solid rgba(255,80,50,.35);
+  box-shadow:0 8px 30px rgba(0,0,0,.3);
+}
+.boss-hud strong{display:block;text-align:center;color:#ff8065;font-size:13px}
+.boss-bar{height:8px;background:#260d0d;border-radius:8px;overflow:hidden;margin-top:5px}
+.boss-bar i{display:block;height:100%;width:100%;background:#ff4d32}
+.boss-msg{text-align:center;font-size:10px;color:#ffd7cf;margin-top:3px}
+.evo-stage{
+  text-align:center;font-size:30px;padding:8px;
+}
+.weather{
+  text-align:center;color:#b8d8ff;font-size:10px;margin-top:5px;
+}
+.craft-item{
+  padding:6px;margin:4px 0;background:rgba(0,0,0,.18);
+  border-radius:9px;font-size:10px;display:flex;
+  justify-content:space-between;align-items:center;gap:5px
+}
+.craft-item button{width:auto;padding:5px}
+.mystery{
+  position:fixed;z-index:25;pointer-events:none;font-size:26px;
+  filter:drop-shadow(0 0 9px rgba(255,220,80,.8));
+}
+
+/* =========================
+   سیستم‌های جدید
+========================= */
+
+.extra-panels{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:9px;
+}
+
+.panel{
+  background:rgba(255,255,255,.055);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:15px;
+  padding:10px;
+  text-align:right;
+}
+
+.panel h3{
+  margin:0 0 7px;
+  color:#6dff9a;
+  font-size:14px;
+}
+
+.panel p{
+  margin:4px 0;
+  font-size:11px;
+  color:#ddd;
+  line-height:1.7;
+}
+
+.progress{
+  height:7px;
+  background:rgba(255,255,255,.08);
+  border-radius:10px;
+  overflow:hidden;
+  margin:6px 0;
+}
+
+.progress i{
+  display:block;
+  height:100%;
+  width:0%;
+  background:#27e878;
+  border-radius:10px;
+}
+
+.mission{
+  padding:6px;
+  margin:4px 0;
+  border-radius:9px;
+  background:rgba(0,0,0,.18);
+  font-size:10px;
+}
+
+.mission.done{
+  opacity:.6;
+  text-decoration:line-through;
+}
+
+.rewardBtn{
+  width:100%;
+  min-height:32px;
+  padding:6px;
+  margin-top:5px;
+  background:#ffd43b;
+  color:#352900;
+  font-size:10px;
+}
+
+.powerup{
+  position:fixed;
+  z-index:20;
+  pointer-events:none;
+  font-size:13px;
+  font-weight:bold;
+  padding:7px 11px;
+  border-radius:12px;
+  background:rgba(0,0,0,.75);
+  border:1px solid rgba(255,255,255,.15);
+  animation:powerPop 1.6s ease forwards;
+}
+
+@keyframes powerPop{
+  0%{opacity:0;transform:translateY(10px) scale(.8)}
+  15%{opacity:1;transform:translateY(0) scale(1)}
+  80%{opacity:1}
+  100%{opacity:0;transform:translateY(-20px)}
+}
+
+.event-banner{
+  margin-top:7px;
+  padding:7px;
+  border-radius:10px;
+  background:rgba(255,212,59,.09);
+  color:#ffd43b;
+  font-size:11px;
+  font-weight:bold;
+}
+
+@media(max-width:600px){
+  .extra-panels{grid-template-columns:1fr}
+}
+
+.message{
+  min-height:22px;
+  color:#ffd43b;
+  margin:5px;
+  font-size:13px;
+  font-weight:bold;
+}
+
+.controls{
+  color:#a8ffc3;
+  font-size:11px;
+  line-height:1.8;
+}
+
+.designer{
+  margin-top:13px;
+  font-size:17px;
+  font-weight:bold;
+  color:#6dff9a;
+  text-shadow:0 0 12px #00ff66;
+}
+
+@media(min-width:600px){
+  .mobile-controls{
+    display:none;
+  }
+}
+
+@media(max-width:380px){
+
+  .container{
+    padding:10px;
+    border-radius:20px;
+  }
+
+  .top-info{
+    gap:4px;
+  }
+
+  .info{
+    font-size:10px;
+  }
+
+  .info b{
+    font-size:15px;
+  }
+
+  .mobile-controls{
+    width:165px;
+    grid-template-columns:repeat(3,53px);
+    grid-template-rows:repeat(3,48px);
+  }
+
+  .skins{
+    gap:6px;
+  }
+
+  .skin{
+    padding:8px 4px;
+  }
+
+  .preview{
+    width:42px;
+    height:42px;
+  }
+}
+</style>
+</head>
+
+<body>
+```html
+<!-- ================= PLAYER ID ================= -->
+
+<div id="playerBox">
+
+  <div class="player-icon">🎮</div>
+
+  <div>
+    <small>شناسه بازیکن</small>
+
+    <strong id="playerId">
+      در حال ساخت...
+    </strong>
+  </div>
+
+  <button onclick="copyPlayerId()">
+    📋
+  </button>
+
+</div>
+
+
+<style>
+
+#playerBox {
+
+  position: fixed;
+
+  top: 15px;
+  right: 15px;
+
+  z-index: 9999;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 10px 14px;
+
+  background: rgba(15,23,42,.92);
+
+  color: white;
+
+  border: 1px solid rgba(255,255,255,.15);
+
+  border-radius: 15px;
+
+  box-shadow:
+    0 8px 25px rgba(0,0,0,.25);
+
+  backdrop-filter: blur(10px);
+
+  direction: rtl;
+}
+
+.player-icon {
+
+  font-size: 25px;
+}
+
+#playerBox small {
+
+  display: block;
+
+  color: #94a3b8;
+
+  font-size: 10px;
+
+  margin-bottom: 3px;
+}
+
+#playerBox strong {
+
+  display: block;
+
+  color: #facc15;
+
+  font-size: 14px;
+
+  letter-spacing: 1px;
+}
+
+#playerBox button {
+
+  border: none;
+
+  background: #4f46e5;
+
+  color: white;
+
+  border-radius: 9px;
+
+  padding: 7px 9px;
+
+  cursor: pointer;
+
+  font-size: 14px;
+
+}
+
+#playerBox button:hover {
+
+  background: #6366f1;
+
+}
+
+@media(max-width:500px) {
+
+  #playerBox {
+
+    top: 8px;
+    right: 8px;
+
+    padding: 8px 10px;
+  }
+
+  #playerBox strong {
+
+    font-size: 12px;
+  }
+
+}
+
+</style>
+
+
+<script>
+
+/* ================================================= */
+/*             PLAYER ID SYSTEM                      */
+/* ================================================= */
+
+
+function generatePlayerID() {
+
+  /*
+    ساخت یک ID تصادفی
+    مثال:
+    SNK-482731
+  */
+
+  const number =
+    Math.floor(
+      100000 +
+      Math.random() * 900000
+    );
+
+  return "SNK-" + number;
+
+}
+
+
+/* گرفتن ID قبلی */
+
+let playerID =
+  localStorage.getItem("snakePlayerID");
+
+
+/* اگر بازیکن ID نداشت */
+
+if (!playerID) {
+
+  playerID =
+    generatePlayerID();
+
+  localStorage.setItem(
+    "snakePlayerID",
+    playerID
+  );
+
+}
+
+
+/* نمایش ID */
+
+document.getElementById(
+  "playerId"
+).textContent = playerID;
+
+
+/* ================================================= */
+/*                  COPY ID                         */
+/* ================================================= */
+
+function copyPlayerId() {
+
+  navigator.clipboard.writeText(
+    playerID
+  );
+
+  alert(
+    "✅ ID بازیکن کپی شد:\n\n" +
+    playerID
+  );
+
+}
+
+</script>
+```
+
+  <div id="bossHud" class="boss-hud">
+<strong>👑 Boss</strong>
+<div class="boss-bar"><i></i></div>
+<div class="boss-msg">با Boss برخورد کن تا به آن آسیب بزنی!</div>
+</div>
+
+
+<div class="container">
+
+<h1>🐍 مار بازی 🍎</h1>
+
+<div class="top-info">
+
+<div class="info">
+🍎 امتیاز
+<br>
+<b id="score">0</b>
+</div>
+
+<div class="info">
+🪙 سکه
+<br>
+<b id="coins">0</b>
+</div>
+
+<div class="info">
+🏆 رکورد
+<br>
+<b id="highScore">0</b>
+</div>
+
+<div class="info">
+❤️ جان
+<br>
+<b id="lives">1</b>
+</div>
+
+</div>
+
+<div class="options">
+
+<div>
+<label>🎮 سختی</label>
+
+<select id="difficulty">
+<option value="easy">🟢 Easy</option>
+<option value="normal" selected>🟡 Normal</option>
+<option value="hard">🔴 Hard ×2 🪙</option>
+</select>
+
+</div>
+
+<div>
+
+<label>🗺️ مپ</label>
+
+<select id="map">
+<option value="forest">🌲 جنگل</option>
+<option value="volcano">🌋 آتشفشان</option>
+<option value="ice">❄️ یخی</option>
+<option value="space">🌌 فضایی</option>
+<option value="desert">🏜️ کویری</option>
+</select>
+
+</div>
+
+</div>
+
+<div class="game-wrap">
+<canvas id="game" width="500" height="500"></canvas>
+</div>
+
+<div class="buttons">
+
+<button class="start" onclick="restartGame()">
+🎮 شروع
+</button>
+
+<button class="shopBtn" onclick="toggleShop()">
+🛒 اسکین
+</button>
+
+</div>
+
+<div class="mobile-controls">
+
+<button class="up" onclick="changeDirection('up')">▲</button>
+
+<button class="left" onclick="changeDirection('left')">◀</button>
+
+<button class="down" onclick="changeDirection('down')">▼</button>
+
+<button class="right" onclick="changeDirection('right')">▶</button>
+
+</div>
+
+<div id="message" class="message"></div>
+
+<div id="eventBanner" class="event-banner" style="display:none"></div>
+
+
+<div class="adventure-grid">
+
+  <div class="adventure-card">
+    <h3>🗺️ Campaign</h3>
+    <p id="campaignText">مرحله 1 — جنگل</p>
+    <p id="campaignGoal">هدف: امتیاز 15</p>
+    <button onclick="advanceCampaign()">🚀 ورود به مرحله</button>
+  </div>
+
+  <div class="adventure-card">
+    <h3>👑 Boss Fight</h3>
+    <p id="bossText">با رسیدن به Levelهای خاص، Boss ظاهر می‌شود.</p>
+    <button onclick="startBossFight()">⚔️ شروع Boss</button>
+  </div>
+
+  <div class="adventure-card">
+    <h3>🧬 Skill Tree</h3>
+    <div id="skills"></div>
+  </div>
+
+  <div class="adventure-card">
+    <h3>🐉 Evolution</h3>
+    <div class="evo-stage" id="evolutionEmoji">🐍</div>
+    <p id="evolutionText">Evolution Stage 1</p>
+  </div>
+
+  <div class="adventure-card">
+    <h3>🏆 Achievement</h3>
+    <div id="achievements"></div>
+  </div>
+
+  <div class="adventure-card">
+    <h3>🧪 Crafting</h3>
+    <div id="crafting"></div>
+  </div>
+
+  <div class="adventure-card">
+    <h3>🎁 Mystery Chest</h3>
+    <p id="chestText">گاهی صندوق روی مپ ظاهر می‌شود.</p>
+    <button onclick="spawnMysteryChest()">🎲 جستجوی صندوق</button>
+  </div>
+
+  <div class="adventure-card">
+    <h3>🌦️ World</h3>
+    <p id="weatherText">آب‌وهوا: آفتابی</p>
+    <div class="weather">چرخه روز / شب + رویدادهای محیطی</div>
+  </div>
+
+</div>
+
+<div class="extra-panels">
+
+  <div class="panel">
+    <h3>🎯 مأموریت‌های امروز</h3>
+    <div id="missions"></div>
+  </div>
+
+  <div class="panel">
+    <h3>⭐ سطح بازیکن</h3>
+    <p>Level <b id="level">1</b> — <span id="xpText">0 / 100 XP</span></p>
+    <div class="progress"><i id="xpBar"></i></div>
+    <p id="nextUnlock">🎁 ادامه بده تا جایزه بعدی باز شود!</p>
+  </div>
+
+  <div class="panel">
+    <h3>🎁 جایزه روزانه</h3>
+    <p id="dailyRewardText">در حال بررسی...</p>
+    <button id="dailyRewardBtn" class="rewardBtn" onclick="claimDailyReward()">دریافت جایزه</button>
+  </div>
+
+  <div class="panel">
+    <h3>📊 آمار</h3>
+    <p id="stats">در حال بارگذاری...</p>
+  </div>
+
+</div>
+
+
+<div class="controls">
+👆 با دکمه‌ها یا کشیدن انگشت روی صفحه حرکت کن
+<br>
+❤️ بعضی اسکین‌ها چند جان دارند!
+<br>
+🪙 در Hard سکه‌ها ×2 می‌شوند و با قابلیت اسکین ترکیب می‌شوند.
+</div>
+
+<!-- فروشگاه -->
+
+<div class="shop" id="shop">
+
+<h2>🐍 فروشگاه اسکین</h2>
+
+<div class="skins">
+
+<div class="skin">
+
+<div class="preview green"></div>
+
+<h3>🟢 سبز</h3>
+
+<p>رایگان</p>
+
+<div class="ability">
+❤️ ۱ جان<br>
+🪙 ×1 سکه
+</div>
+
+<button onclick="selectSkin('green')">
+انتخاب
+</button>
+
+</div>
+
+
+<div class="skin">
+
+<div class="preview red"></div>
+
+<h3>🔴 قرمز</h3>
+
+<p>🪙 20</p>
+
+<div class="ability">
+❤️❤️ ۲ جان<br>
+🪙 ×1 سکه
+</div>
+
+<button id="redBtn" onclick="buySkin('red',20)">
+خرید
+</button>
+
+</div>
+
+
+<div class="skin">
+
+<div class="preview blue"></div>
+
+<h3>🔵 آبی</h3>
+
+<p>🪙 50</p>
+
+<div class="ability">
+❤️ ۱ جان<br>
+🪙 ×2 سکه
+</div>
+
+<button id="blueBtn" onclick="buySkin('blue',50)">
+خرید
+</button>
+
+</div>
+
+
+<div class="skin">
+
+<div class="preview yellow"></div>
+
+<h3>🟡 طلایی</h3>
+
+<p>🪙 100</p>
+
+<div class="ability">
+❤️ ۱ جان<br>
+🪙 ×3 سکه
+</div>
+
+<button id="yellowBtn" onclick="buySkin('yellow',100)">
+خرید
+</button>
+
+</div>
+
+
+<div class="skin legendary">
+
+<div class="preview blackgold"></div>
+
+<h3>🖤💛 Black Gold</h3>
+
+<p>🪙 250</p>
+
+<div class="ability">
+❤️❤️ ۲ جان<br>
+🪙 ×2 سکه
+</div>
+
+<button id="blackgoldBtn" onclick="buySkin('blackgold',250)">
+خرید
+</button>
+
+</div>
+
+
+<div class="skin legendary">
+
+<div class="preview redshadow"></div>
+
+<h3>❤️🖤 Red Shadow</h3>
+
+<p>🪙 300</p>
+
+<div class="ability">
+❤️❤️❤️ ۳ جان<br>
+🪙 ×1 سکه
+</div>
+
+<button id="redshadowBtn" onclick="buySkin('redshadow',300)">
+خرید
+</button>
+
+</div>
+
+
+<div class="skin legendary">
+
+<div class="preview cyber"></div>
+
+<h3>💙💜 Cyber</h3>
+
+<p>🪙 350</p>
+
+<div class="ability">
+❤️ ۱ جان<br>
+🪙 ×3 سکه
+</div>
+
+<button id="cyberBtn" onclick="buySkin('cyber',350)">
+خرید
+</button>
+
+</div>
+
+
+<div class="skin legendary">
+
+<div class="preview toxic"></div>
+
+<h3>💚🖤 Toxic</h3>
+
+<p>🪙 400</p>
+
+<div class="ability">
+❤️❤️ ۲ جان<br>
+🪙 ×3 سکه
+</div>
+
+<button id="toxicBtn" onclick="buySkin('toxic',400)">
+خرید
+</button>
+
+</div>
+
+
+<div class="skin legendary">
+
+<div class="preview ice"></div>
+
+<h3>🤍💙 Ice</h3>
+
+<p>🪙 450</p>
+
+<div class="ability">
+❤️❤️❤️ ۳ جان<br>
+🪙 ×2 سکه
+</div>
+
+<button id="iceBtn" onclick="buySkin('ice',450)">
+خرید
+</button>
+
+</div>
+
+
+<div class="skin legendary">
+
+<div class="preview rainbow"></div>
+
+<h3>🌈 Rainbow</h3>
+
+<p>🪙 500</p>
+
+<div class="ability">
+❤️ ۱ جان<br>
+🪙 ×4 سکه
+</div>
+
+<button id="rainbowBtn" onclick="buySkin('rainbow',500)">
+خرید
+</button>
+
+</div>
+
+
+<div class="skin legendary">
+
+<div class="preview galaxy"></div>
+
+<h3>🌌 Galaxy</h3>
+
+<p>🪙 750</p>
+
+<div class="ability">
+❤️❤️ ۲ جان<br>
+🪙 ×4 سکه
+</div>
+
+<button id="galaxyBtn" onclick="buySkin('galaxy',750)">
+خرید
+</button>
+
+</div>
+
+
+<div class="skin legendary">
+
+<div class="preview inferno"></div>
+
+<h3>🔥 Inferno</h3>
+
+<p>🪙 100</p>
+
+<div class="ability">
+❤️❤️❤️ ۳ جان<br>
+🪙 ×1000 سکه
+</div>
+
+<button id="infernoBtn" onclick="buySkin('inferno',1000)">
+خرید
+</button>
+
+</div>
+
+</div>
+
+<div class="skin legendary secret-skin">
+  <div class="preview yellow"></div>
+  <h3>👑 King Snake</h3>
+  <p>🔒 رکورد 100</p>
+  <div class="ability">❤️❤️❤️❤️ ۴ جان<br>🪙 ×3 سکه</div>
+  <button id="kingBtn" onclick="buySkin('king',0)">قفل</button>
+</div>
+
+<div class="skin legendary secret-skin">
+  <div class="preview blue"></div>
+  <h3>👻 Ghost</h3>
+  <p>🔒 10 بازی</p>
+  <div class="ability">❤️❤️ ۲ جان<br>🪙 ×5 سکه</div>
+  <button id="ghostBtn" onclick="buySkin('ghost',0)">قفل</button>
+</div>
+
+<div class="skin legendary secret-skin">
+  <div class="preview yellow"></div>
+  <h3>☀️ Solar</h3>
+  <p>🔒 1000 سکه</p>
+  <div class="ability">❤️❤️ ۲ جان<br>🪙 ×4 سکه</div>
+  <button id="solarBtn" onclick="buySkin('solar',0)">قفل</button>
+</div>
+
+<div class="skin legendary secret-skin">
+  <div class="preview galaxy"></div>
+  <h3>🌑 Void</h3>
+  <p>🔒 2500 XP</p>
+  <div class="ability">❤️❤️❤️❤️ ۴ جان<br>🪙 ×5 سکه</div>
+  <button id="voidBtn" onclick="buySkin('void',0)">قفل</button>
+</div>
+
+</div>
+
+<div class="designer">
+✨ طراح: محمد حسین ✨
+</div>
+
+</div>
+```html
+<script>
+
+/* ========================================= */
+/*          دریافت ID بازیکن                  */
+/* ========================================= */
+
+const playerID =
+    localStorage.getItem("snakePlayerID");
+
+
+/* ========================================= */
+/*          کلید ذخیره سکه                   */
+/* ========================================= */
+
+const coinsKey =
+    "snakeCoins_" + playerID;
+
+
+/* ========================================= */
+/*          خواندن سکه‌های خریداری‌شده       */
+/* ========================================= */
+
+function getPurchasedCoins() {
+
+    return Number(
+        localStorage.getItem(coinsKey)
+    ) || 0;
+
+}
+
+
+/* ========================================= */
+/*          نمایش سکه                         */
+/* ========================================= */
+
+function updateCoinsDisplay() {
+
+    const purchasedCoins =
+        getPurchasedCoins();
+
+    /*
+      اگر متغیر coins در بازی داری،
+      می‌توانی اینجا به آن اضافه کنی.
+    */
+
+    document.getElementById(
+        "coinCount"
+    ).textContent =
+        purchasedCoins;
+
+}
+
+
+/* اجرای اولیه */
+
+updateCoinsDisplay();
+
+</script>
+```
+
+<script> 
+
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
+
+const grid=25;
+const tiles=20;
+
+let snake=[];
+let fruit=null;
+let coin=null;
+let obstacles=[];
+let bombs=[];
+
+let dx=1;
+let dy=0;
+
+let score=0;
+let gameOver=false;
+let gameLoop;
+
+let difficulty="normal";
+let selectedMap="forest";
+
+let animationTime=0;
+
+/* =========================
+   سیستم قابلیت اسکین
+========================= */
+
+const skinAbilities={
+
+green:{
+lives:1,
+coinMultiplier:1
+},
+
+red:{
+lives:2,
+coinMultiplier:1
+},
+
+blue:{
+lives:1,
+coinMultiplier:2
+},
+
+yellow:{
+lives:1,
+coinMultiplier:3
+},
+
+blackgold:{
+lives:2,
+coinMultiplier:2
+},
+
+redshadow:{
+lives:3,
+coinMultiplier:1
+},
+
+cyber:{
+lives:1,
+coinMultiplier:3
+},
+
+toxic:{
+lives:2,
+coinMultiplier:3
+},
+
+ice:{
+lives:3,
+coinMultiplier:2
+},
+
+rainbow:{
+lives:1,
+coinMultiplier:4
+},
+
+galaxy:{
+lives:2,
+coinMultiplier:4
+},
+
+inferno:{
+lives:3,
+coinMultiplier:5
+},
+king:{lives:4,coinMultiplier:3},
+ghost:{lives:2,coinMultiplier:5},
+solar:{lives:2,coinMultiplier:4},
+void:{lives:4,coinMultiplier:5}
+
+};
+
+let lives=1;
+
+let coins=
+Number(localStorage.getItem("snakeCoins"))||0;
+
+let highScore=
+Number(localStorage.getItem("snakeHighScore"))||0;
+
+let unlocked=
+JSON.parse(localStorage.getItem("snakeSkins"))||["green"];
+
+let currentSkin=
+localStorage.getItem("currentSnakeSkin")||"green";
+
+
+/* =========================
+   سیستم Adventure
+========================= */
+
+let campaignStage=Number(localStorage.getItem("snakeCampaignStage"))||1;
+let skillPoints=Number(localStorage.getItem("snakeSkillPoints"))||0;
+let skills=JSON.parse(localStorage.getItem("snakeSkills")||'{"survival":0,"economy":0,"speed":0}');
+let gems=Number(localStorage.getItem("snakeGems"))||0;
+let materials=JSON.parse(localStorage.getItem("snakeMaterials")||'{"fire":0,"ice":0,"meteor":0,"sand":0}');
+let crafted=JSON.parse(localStorage.getItem("snakeCrafted")||'{"fireCore":false,"iceCore":false,"voidCore":false}');
+let boss=null;
+let mysteryChest=null;
+let worldTime=Number(localStorage.getItem("snakeWorldTime"))||0;
+
+const campaign=[
+  {map:"forest",name:"جنگل گمشده",goal:15,icon:"🌲"},
+  {map:"desert",name:"کویر طلایی",goal:25,icon:"🏜️"},
+  {map:"ice",name:"قلمرو یخی",goal:35,icon:"❄️"},
+  {map:"volcano",name:"کوه آتش",goal:50,icon:"🌋"},
+  {map:"space",name:"آخرین مرز",goal:75,icon:"🌌"}
+];
+
+const achievements=[
+  ["first10","🎯 First Blood","رسیدن به امتیاز 10",()=>highScore>=10,50],
+  ["rich","💰 Rich Snake","داشتن 10,000 سکه",()=>totalCoins>=10000,150],
+  ["meteor","☄️ Meteor Survivor","100 ثانیه بقا",()=>bestSurvival>=100,100],
+  ["untouchable","💀 Untouchable","امتیاز 100",()=>highScore>=100,200],
+  ["legend","👑 Legend","باز کردن همه مپ‌ها",()=>campaignStage>=5,300],
+  ["collector","🧰 Collector","ساخت 3 Core",()=>Object.values(crafted).filter(Boolean).length>=3,200]
+];
+
+function saveAdventure(){
+  localStorage.setItem("snakeCampaignStage",campaignStage);
+  localStorage.setItem("snakeSkillPoints",skillPoints);
+  localStorage.setItem("snakeSkills",JSON.stringify(skills));
+  localStorage.setItem("snakeGems",gems);
+  localStorage.setItem("snakeMaterials",JSON.stringify(materials));
+  localStorage.setItem("snakeCrafted",JSON.stringify(crafted));
+  localStorage.setItem("snakeWorldTime",worldTime);
+}
+
+function campaignCurrent(){
+  return campaign[Math.min(campaignStage-1,campaign.length-1)];
+}
+
+function updateCampaignUI(){
+  const c=campaignCurrent();
+  const p=document.getElementById("campaignText");
+  const g=document.getElementById("campaignGoal");
+  if(!p)return;
+  p.textContent=`مرحله ${campaignStage}/5 — ${c.icon} ${c.name}`;
+  g.textContent=`هدف: امتیاز ${c.goal}${campaignStage>=5?" — 🏆 آخرین مرحله":""}`;
+}
+
+function advanceCampaign(){
+  const c=campaignCurrent();
+  if(highScore<c.goal){
+    showMessage("🔒 برای این مرحله ابتدا امتیاز "+c.goal+" لازم است.");
+    return;
+  }
+  if(campaignStage<5){
+    campaignStage++;
+    skillPoints++;
+    const next=campaignCurrent();
+    selectedMap=next.map;
+    const mapSelect=document.getElementById("map");
+    if(mapSelect) mapSelect.value=selectedMap;
+    localStorage.setItem("snakeMap",selectedMap);
+    saveAdventure();
+    showMessage("🗺️ مرحله "+campaignStage+" باز شد!");
+    updateAdventureUI();
+  }else{
+    skillPoints++;
+    saveAdventure();
+    showMessage("👑 Campaign کامل شد! +1 Skill Point");
+  }
+}
+
+function skillCost(type){
+  return 1+skills[type];
+}
+
+function buySkill(type){
+  const cost=skillCost(type);
+  if(skillPoints<cost){
+    showMessage("❌ Skill Point کافی نیست.");
+    return;
+  }
+  if(skills[type]>=5){
+    showMessage("⭐ این مهارت به حداکثر رسیده.");
+    return;
+  }
+  skillPoints-=cost;
+  skills[type]++;
+  saveAdventure();
+  updateAdventureUI();
+  showMessage("🧬 مهارت ارتقا یافت!");
+}
+
+function updateSkills(){
+  const box=document.getElementById("skills");
+  if(!box)return;
+  const names={
+    survival:["❤️ Survival","هر سطح: +1 شانس جان اضافه"],
+    economy:["🪙 Economy","هر سطح: +10٪ سکه"],
+    speed:["⚡ Speed","هر سطح: کنترل سریع‌تر"]
+  };
+  box.innerHTML=`<p>⭐ Skill Points: <b>${skillPoints}</b></p>`;
+  Object.keys(names).forEach(k=>{
+    const row=document.createElement("div");
+    row.className="skill-row";
+    row.innerHTML=`<span>${names[k][0]}<br><small>Level ${skills[k]}/5</small></span>`;
+    const b=document.createElement("button");
+    b.textContent=`+1 (${skillCost(k)} SP)`;
+    b.onclick=()=>buySkill(k);
+    row.appendChild(b);
+    box.appendChild(row);
+  });
+}
+
+function evolutionInfo(){
+  if(xp>=5000)return ["🐉","Stage 5 — Legendary Dragon Snake"];
+  if(xp>=2500)return ["🔥","Stage 4 — Dragon Snake"];
+  if(xp>=1200)return ["✨","Stage 3 — Energy Snake"];
+  if(xp>=500)return ["🐍","Stage 2 — Evolved Snake"];
+  return ["🐍","Stage 1 — Rookie Snake"];
+}
+
+function updateEvolution(){
+  const [emoji,name]=evolutionInfo();
+  document.getElementById("evolutionEmoji").textContent=emoji;
+  document.getElementById("evolutionText").textContent=name+" — XP: "+xp;
+}
+
+function updateAchievements(){
+  const box=document.getElementById("achievements");
+  if(!box)return;
+  let data=JSON.parse(localStorage.getItem("snakeAchievements")||"{}");
+  box.innerHTML="";
+  achievements.forEach(a=>{
+    const done=!!data[a[0]] || a[3]();
+    if(done && !data[a[0]]){
+      data[a[0]]=true;
+      coins+=a[4];
+      totalCoins+=a[4];
+      gems+=Math.max(1,Math.floor(a[4]/100));
+      addXP(30);
+      saveData();
+      saveAdventure();
+      showMessage("🏆 Achievement: "+a[1]+" +"+a[4]+" 🪙");
+    }
+    const d=document.createElement("div");
+    d.className="achievement "+(done?"done":"locked");
+    d.innerHTML=`${a[1]} — ${done?"✅":"🔒"}<br><small>${a[2]}</small>`;
+    box.appendChild(d);
+  });
+  localStorage.setItem("snakeAchievements",JSON.stringify(data));
+}
+
+function addMaterial(type,n=1){
+  materials[type]=(materials[type]||0)+n;
+  saveAdventure();
+  updateCrafting();
+}
+
+function craft(item){
+  const recipes={
+    fireCore:{need:{fire:3,meteor:1},name:"🔥 Fire Core"},
+    iceCore:{need:{ice:3,meteor:1},name:"❄️ Ice Core"},
+    voidCore:{need:{meteor:4,sand:2},name:"🌑 Void Core"}
+  };
+  const r=recipes[item];
+  if(!r || crafted[item])return;
+  for(const k in r.need){
+    if((materials[k]||0)<r.need[k]){
+      showMessage("❌ مواد کافی نیست.");
+      return;
+    }
+  }
+  for(const k in r.need)materials[k]-=r.need[k];
+  crafted[item]=true;
+  gems+=3;
+  addXP(75);
+  saveAdventure();
+  updateCrafting();
+  showMessage("🧪 ساخته شد: "+r.name+" +3 💎");
+}
+
+function updateCrafting(){
+  const box=document.getElementById("crafting");
+  if(!box)return;
+  const recipes=[
+    ["fireCore","🔥 Fire Core","fire:3 + meteor:1"],
+    ["iceCore","❄️ Ice Core","ice:3 + meteor:1"],
+    ["voidCore","🌑 Void Core","meteor:4 + sand:2"]
+  ];
+  box.innerHTML=`<p>🔥 ${materials.fire} | ❄️ ${materials.ice} | ☄️ ${materials.meteor} | 🏜️ ${materials.sand}</p>`;
+  recipes.forEach(r=>{
+    const row=document.createElement("div");
+    row.className="craft-item";
+    row.innerHTML=`<span>${r[1]}<br><small>${r[2]}</small></span>`;
+    const b=document.createElement("button");
+    b.textContent=crafted[r[0]]?"✅ ساخته شد":"🧪 ساخت";
+    b.disabled=crafted[r[0]];
+    b.onclick=()=>craft(r[0]);
+    row.appendChild(b);
+    box.appendChild(row);
+  });
+}
+
+function startBossFight(){
+  if(![3,5].includes(campaignStage)){
+    showMessage("👑 Boss در پایان مراحل 3 و 5 فعال می‌شود.");
+    return;
+  }
+  if(boss && boss.active){
+    showMessage("⚔️ Boss همین حالا فعال است.");
+    return;
+  }
+  const names={
+    forest:["🕷️","Giant Spider"],
+    desert:["🪱","Sand Worm"],
+    ice:["🧊","Ice Golem"],
+    volcano:["🔥","Lava Monster"],
+    space:["👾","Space Titan"]
+  };
+  const info=names[selectedMap]||names.forest;
+  boss={
+    active:true,
+    hp:10+campaignStage*5,
+    maxHp:10+campaignStage*5,
+    x:Math.floor(tiles/2),
+    y:Math.floor(tiles/2),
+    icon:info[0],
+    name:info[1],
+    until:Date.now()+45000
+  };
+  document.getElementById("bossText").textContent=info[0]+" "+info[1]+" — شکست بده!";
+  showMessage("⚔️ Boss ظاهر شد!");
+  renderBoss();
+}
+
+function renderBoss(){
+  const hud=document.getElementById("bossHud");
+  if(!hud)return;
+  if(!boss || !boss.active){
+    hud.style.display="none";
+    return;
+  }
+  hud.style.display="block";
+  hud.querySelector("strong").textContent=boss.icon+" "+boss.name+" — HP "+boss.hp+"/"+boss.maxHp;
+  hud.querySelector(".boss-bar i").style.width=Math.max(0,boss.hp/boss.maxHp*100)+"%";
+}
+
+function damageBoss(){
+  if(!boss || !boss.active)return;
+  boss.hp--;
+  if(boss.hp<=0){
+    boss.active=false;
+    coins+=250+campaignStage*100;
+    totalCoins+=250+campaignStage*100;
+    gems+=5;
+    skillPoints++;
+    addXP(150);
+    saveData();
+    saveAdventure();
+    showMessage("👑 Boss شکست خورد! +💎5 +Skill Point");
+  }
+  renderBoss();
+}
+
+function updateBoss(){
+  if(!boss || !boss.active)return;
+  if(Date.now()>boss.until){
+    boss.active=false;
+    showMessage("💀 Boss فرار کرد!");
+    renderBoss();
+    return;
+  }
+  /* Boss با نزدیک شدن سر مار آسیب می‌بیند. */
+  if(snake && snake[0] && snake[0].x===boss.x && snake[0].y===boss.y){
+    damageBoss();
+  }
+  if(Math.random()<.18){
+    boss.x=Math.max(1,Math.min(tiles-2,boss.x+(Math.random()<.5?-1:1)));
+    boss.y=Math.max(1,Math.min(tiles-2,boss.y+(Math.random()<.5?-1:1)));
+  }
+}
+
+function spawnMysteryChest(){
+  if(mysteryChest){
+    showMessage("🎁 یک صندوق همین حالا روی نقشه است.");
+    return;
+  }
+  mysteryChest={
+    x:Math.floor(Math.random()*tiles),
+    y:Math.floor(Math.random()*tiles),
+    icon:"🎁"
+  };
+  showMessage("🎁 یک Mystery Chest پیدا شد!");
+}
+
+function collectMysteryChest(){
+  if(!mysteryChest)return;
+  const rewards=[
+    ["🪙",100],["💎",3],["⚡","power"],["🧪","material"]
+  ];
+  const r=rewards[Math.floor(Math.random()*rewards.length)];
+  if(r[0]==="🪙"){
+    coins+=r[1]; totalCoins+=r[1]; addXP(30);
+    showMessage("🎁 صندوق: +"+r[1]+" 🪙");
+  }else if(r[0]==="💎"){
+    gems+=r[1]; addXP(50);
+    showMessage("🎁 صندوق: +"+r[1]+" 💎");
+  }else if(r[1]==="power"){
+    powerupItem={x:snake[0].x,y:snake[0].y,id:"shield",emoji:"🛡️",name:"سپر",duration:0};
+    showMessage("🎁 صندوق: 🛡️ Shield");
+  }else{
+    const keys=["fire","ice","meteor","sand"];
+    const k=keys[Math.floor(Math.random()*keys.length)];
+    addMaterial(k,2);
+    showMessage("🎁 صندوق: +2 "+k);
+  }
+  mysteryChest=null;
+  saveData();
+  saveAdventure();
+}
+
+function updateWeather(){
+  worldTime++;
+  const phase=worldTime%4;
+  const data=[
+    ["☀️ روز","آفتابی"],
+    ["🌅 غروب","نسیم"],
+    ["🌙 شب","ستاره‌ای"],
+    ["⛈️ طوفان","طوفانی"]
+  ][phase];
+  const el=document.getElementById("weatherText");
+  if(el)el.textContent="آب‌وهوا: "+data[0]+" — "+data[1];
+  saveAdventure();
+}
+
+function drawAdventureObjects(){
+  if(boss && boss.active){
+    ctx.font="24px Arial";
+    ctx.textAlign="center";
+    ctx.textBaseline="middle";
+    ctx.fillText(boss.icon,boss.x*grid+grid/2,boss.y*grid+grid/2);
+  }
+  if(mysteryChest){
+    ctx.font="22px Arial";
+    ctx.fillText("🎁",mysteryChest.x*grid+grid/2,mysteryChest.y*grid+grid/2);
+  }
+}
+
+function updateAdventureUI(){
+  updateCampaignUI();
+  updateSkills();
+  updateEvolution();
+  updateAchievements();
+  updateCrafting();
+  renderBoss();
+}
+
+
+/* =========================
+   سیستم‌های پیشرفته بازی
+========================= */
+
+let xp=Number(localStorage.getItem("snakeXP"))||0;
+let totalGames=Number(localStorage.getItem("snakeGames"))||0;
+let totalFruits=Number(localStorage.getItem("snakeFruits"))||0;
+let totalCoins=Number(localStorage.getItem("snakeTotalCoins"))||0;
+let totalHits=Number(localStorage.getItem("snakeHits"))||0;
+let bestSurvival=Number(localStorage.getItem("snakeBestSurvival"))||0;
+let survivalSeconds=0;
+let shield=false;
+let speedBoostUntil=0;
+let coinMagnetUntil=0;
+let freezeUntil=0;
+let doubleFruitUntil=0;
+let activeEvent=null;
+
+const dailyMissionPool=[
+  {id:"fruit",title:"🍎 خوردن 20 میوه",goal:20,reward:60},
+  {id:"coins",title:"🪙 جمع کردن 15 سکه",goal:15,reward:70},
+  {id:"score",title:"🏆 رسیدن به امتیاز 15",goal:15,reward:80},
+  {id:"survive",title:"⏱️ زنده ماندن 45 ثانیه",goal:45,reward:100},
+  {id:"games",title:"🎮 انجام 3 بازی",goal:3,reward:90}
+];
+
+let missions=JSON.parse(localStorage.getItem("snakeMissions")||"null");
+let missionDate=localStorage.getItem("snakeMissionDate")||"";
+
+function todayKey(){
+  const d=new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+
+function makeDailyMissions(){
+  const shuffled=[...dailyMissionPool].sort(()=>Math.random()-.5).slice(0,3);
+  missions=shuffled.map(m=>({...m,progress:0,claimed:false}));
+  missionDate=todayKey();
+  saveAdvancedData();
+  renderMissions();
+}
+
+function ensureDailyMissions(){
+  if(missionDate!==todayKey() || !Array.isArray(missions) || missions.length!==3)
+    makeDailyMissions();
+  else
+    renderMissions();
+}
+
+function saveAdvancedData(){
+  localStorage.setItem("snakeXP",xp);
+  localStorage.setItem("snakeGames",totalGames);
+  localStorage.setItem("snakeFruits",totalFruits);
+  localStorage.setItem("snakeTotalCoins",totalCoins);
+  localStorage.setItem("snakeHits",totalHits);
+  localStorage.setItem("snakeBestSurvival",bestSurvival);
+  localStorage.setItem("snakeMissions",JSON.stringify(missions));
+  localStorage.setItem("snakeMissionDate",missionDate);
+}
+
+function levelInfo(){
+  let level=1;
+  let remaining=xp;
+  let need=100;
+  while(remaining>=need){
+    remaining-=need;
+    level++;
+    need=100+((level-1)*50);
+  }
+  return {level,progress:remaining,need};
+}
+
+function addXP(amount){
+  xp+=amount;
+  saveAdvancedData();
+  updateLevelUI();
+}
+
+function updateLevelUI(){
+  const info=levelInfo();
+  const levelEl=document.getElementById("level");
+  const xpText=document.getElementById("xpText");
+  const bar=document.getElementById("xpBar");
+  if(!levelEl)return;
+
+  levelEl.textContent=info.level;
+  xpText.textContent=info.progress+" / "+info.need+" XP";
+  bar.style.width=Math.min(100,info.progress/info.need*100)+"%";
+
+  const unlocks=[
+    "🎁 ادامه بده تا جایزه بعدی باز شود!",
+    "🐍 اسکین‌های قوی‌تر در دسترس تو هستند!",
+    "💎 به سطح بالاتر برس تا جایزه ویژه بگیری!"
+  ];
+  document.getElementById("nextUnlock").textContent=unlocks[info.level%unlocks.length];
+}
+
+function missionProgress(id,value){
+  if(!missions)return;
+  const m=missions.find(x=>x.id===id);
+  if(!m || m.claimed)return;
+  m.progress=Math.min(m.goal,Math.max(m.progress,value));
+  saveAdvancedData();
+  renderMissions();
+}
+
+function missionIncrement(id,value=1){
+  if(!missions)return;
+  const m=missions.find(x=>x.id===id);
+  if(!m || m.claimed)return;
+  m.progress=Math.min(m.goal,m.progress+value);
+  saveAdvancedData();
+  renderMissions();
+}
+
+function renderMissions(){
+  const box=document.getElementById("missions");
+  if(!box || !missions)return;
+  box.innerHTML="";
+  missions.forEach((m,i)=>{
+    const done=m.progress>=m.goal;
+    const row=document.createElement("div");
+    row.className="mission"+(done?" done":"");
+    row.innerHTML=`${m.title}<br>📈 ${m.progress}/${m.goal} — 🪙 ${m.reward}`;
+    if(done && !m.claimed){
+      const b=document.createElement("button");
+      b.className="rewardBtn";
+      b.textContent="🎁 دریافت جایزه";
+      b.onclick=()=>claimMission(i);
+      row.appendChild(b);
+    }else if(m.claimed){
+      row.innerHTML+=`<br>✅ جایزه گرفته شد`;
+    }
+    box.appendChild(row);
+  });
+}
+
+function claimMission(index){
+  const m=missions[index];
+  if(!m || m.claimed || m.progress<m.goal)return;
+  m.claimed=true;
+  coins+=m.reward;
+  totalCoins+=m.reward;
+  addXP(25);
+  document.getElementById("coins").textContent=coins;
+  saveData();
+  saveAdvancedData();
+  renderMissions();
+  showMessage("🎉 مأموریت کامل شد! +"+m.reward+" 🪙");
+}
+
+function claimDailyReward(){
+  const key=todayKey();
+  const last=localStorage.getItem("snakeDailyClaim")||"";
+  const streak=Number(localStorage.getItem("snakeDailyStreak"))||0;
+  if(last===key){
+    showMessage("⏳ جایزه امروز را گرفتی!");
+    return;
+  }
+
+  const yesterday=new Date();
+  yesterday.setDate(yesterday.getDate()-1);
+  const yKey=yesterday.getFullYear()+"-"+String(yesterday.getMonth()+1).padStart(2,"0")+"-"+String(yesterday.getDate()).padStart(2,"0");
+  const newStreak=last===yKey ? Math.min(streak+1,7) : 1;
+  const reward=20+(newStreak*15)+(newStreak===7?200:0);
+
+  coins+=reward;
+  totalCoins+=reward;
+  localStorage.setItem("snakeDailyClaim",key);
+  localStorage.setItem("snakeDailyStreak",newStreak);
+  addXP(20);
+  saveData();
+  saveAdvancedData();
+  updateDailyReward();
+  document.getElementById("coins").textContent=coins;
+  showMessage("🎁 جایزه روزانه: +"+reward+" 🪙");
+}
+
+function updateDailyReward(){
+  const key=todayKey();
+  const last=localStorage.getItem("snakeDailyClaim")||"";
+  const streak=Number(localStorage.getItem("snakeDailyStreak"))||0;
+  const text=document.getElementById("dailyRewardText");
+  const btn=document.getElementById("dailyRewardBtn");
+  if(!text)return;
+
+  if(last===key){
+    text.textContent="✅ امروز دریافت شد — 🔥 زنجیره: "+streak+" روز";
+    btn.disabled=true;
+    btn.textContent="دریافت شد ✓";
+  }else{
+    const next=Math.min(streak+1,7);
+    const reward=20+(next*15)+(next===7?200:0);
+    text.textContent="🔥 روز "+next+" — جایزه: "+reward+" 🪙";
+    btn.disabled=false;
+    btn.textContent="🎁 دریافت جایزه";
+  }
+}
+
+function updateStats(){
+  checkSecretUnlocks();
+  const el=document.getElementById("stats");
+  if(!el)return;
+  el.innerHTML=
+    "🎮 بازی‌ها: "+totalGames+
+    "<br>🍎 میوه‌ها: "+totalFruits+
+    "<br>🪙 کل سکه‌ها: "+totalCoins+
+    "<br>💥 برخوردها: "+totalHits+
+    "<br>⏱️ رکورد بقا: "+bestSurvival+" ثانیه";
+}
+
+function showPowerMessage(text){
+  const el=document.createElement("div");
+  el.className="powerup";
+  el.textContent=text;
+  el.style.left="50%";
+  el.style.top="18%";
+  el.style.transform="translateX(-50%)";
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),1600);
+}
+
+const powerups=[
+  {id:"shield",emoji:"🛡️",name:"سپر",duration:0},
+  {id:"speed",emoji:"⚡",name:"سرعت",duration:7000},
+  {id:"magnet",emoji:"🧲",name:"آهنربا",duration:9000},
+  {id:"freeze",emoji:"❄️",name:"فریز",duration:6000},
+  {id:"double",emoji:"✨",name:"دوبرابر میوه",duration:9000}
+];
+
+function maybeSpawnPowerup(){
+  if(gameOver || Math.random()>0.018)return;
+  const p=powerups[Math.floor(Math.random()*powerups.length)];
+  let pos;
+  let tries=0;
+  do{
+    pos={x:Math.floor(Math.random()*tiles),y:Math.floor(Math.random()*tiles)};
+    tries++;
+  }while(
+    tries<100 &&
+    (isOccupied(pos.x,pos.y)||
+     obstacles.some(o=>o.x===pos.x&&o.y===pos.y)||
+     bombs.some(b=>b.x===pos.x&&b.y===pos.y)||
+     (fruit&&fruit.x===pos.x&&fruit.y===pos.y)||
+     (coin&&coin.x===pos.x&&coin.y===pos.y))
+  );
+  if(tries>=100)return;
+  powerupItem={...pos,...p};
+}
+
+let powerupItem=null;
+
+function collectPowerup(){
+  if(!powerupItem)return;
+  const p=powerupItem;
+  if(p.id==="shield") shield=true;
+  if(p.id==="speed") speedBoostUntil=Date.now()+p.duration;
+  if(p.id==="magnet") coinMagnetUntil=Date.now()+p.duration;
+  if(p.id==="freeze") freezeUntil=Date.now()+p.duration;
+  if(p.id==="double") doubleFruitUntil=Date.now()+p.duration;
+  showPowerMessage(p.emoji+" "+p.name+" فعال شد!");
+  powerupItem=null;
+}
+
+function applyMapSpecial(){
+  activeEvent=null;
+  if(Math.random()<.35){
+    const events=[
+      ["🔥 EVENT: Inferno Mode","coins",5000],
+      ["☄️ EVENT: Meteor Storm","meteors",7000],
+      ["🌪️ EVENT: Sand Storm","sand",7000],
+      ["❄️ EVENT: Ice Rush","ice",7000]
+    ];
+    const e=events[Math.floor(Math.random()*events.length)];
+    activeEvent={name:e[0],type:e[1],until:Date.now()+e[2]};
+    const b=document.getElementById("eventBanner");
+    b.style.display="block";
+    b.textContent=e[0];
+  }else{
+    document.getElementById("eventBanner").style.display="none";
+  }
+}
+
+function eventMultiplier(){
+  return activeEvent && activeEvent.type==="coins" && Date.now()<activeEvent.until ? 5 : 1;
+}
+
+function mapMovementFactor(){
+  if(activeEvent && activeEvent.until<Date.now()){
+    activeEvent=null;
+    document.getElementById("eventBanner").style.display="none";
+  }
+  if(freezeUntil>Date.now())return .55;
+  if(speedBoostUntil>Date.now())return 1.45;
+  if(selectedMap==="ice")return Math.min(1, .88 + skills.speed*.02);
+  return 1;
+}
+
+function setupSpecialMapEffects(){
+  powerupItem=null;
+  applyMapSpecial();
+}
+
+
+
+
+const skinColors={
+
+green:["#27e878","#27e878"],
+red:["#ff3b3b","#ff3b3b"],
+blue:["#3699ff","#3699ff"],
+yellow:["#ffd43b","#ffd43b"],
+
+blackgold:["#080808","#ffd43b"],
+redshadow:["#ff3030","#090909"],
+cyber:["#269cff","#9b35ff"],
+toxic:["#27e878","#050505"],
+ice:["#ffffff","#55d9ff"],
+
+rainbow:[
+"#ff2020",
+"#ff8c00",
+"#ffd43b",
+"#27e878",
+"#3699ff",
+"#a34cff"
+],
+
+galaxy:["#13052d","#9b5cff"],
+inferno:["#ff1717","#ff9d00"],
+king:["#ffd43b","#ffffff"],
+ghost:["#b8c7ff","#6c7cff"],
+solar:["#fff36b","#ff7a00"],
+void:["#050014","#000000"]
+
+};
+
+
+const mapColors={
+
+forest:{
+background:"#06140d",
+border:"#39ff88",
+glow:"#00ff66",
+obstacle:"#385c42"
+},
+
+volcano:{
+background:"#250806",
+border:"#ff5b32",
+glow:"#ff3b00",
+obstacle:"#63322b"
+},
+
+ice:{
+background:"#071b2b",
+border:"#66ddff",
+glow:"#00c8ff",
+obstacle:"#487b99"
+},
+
+space:{
+background:"#08071c",
+border:"#9c6cff",
+glow:"#7a3cff",
+obstacle:"#45406b"
+},
+
+desert:{
+background:"#261707",
+border:"#ffc44d",
+glow:"#ff9d00",
+obstacle:"#79552b"
+}
+
+};
+
+
+const fruits=[
+"🍎",
+"🍊",
+"🍓",
+"🍒",
+"🍇",
+"🍉"
+];
+
+
+document.getElementById("coins").textContent=coins;
+document.getElementById("highScore").textContent=highScore;
+
+
+/* =========================
+   ذخیره اطلاعات
+========================= */
+
+function saveData(){
+
+localStorage.setItem(
+"snakeCoins",
+coins
+);
+
+localStorage.setItem(
+"snakeHighScore",
+highScore
+);
+
+localStorage.setItem(
+"snakeSkins",
+JSON.stringify(unlocked)
+);
+
+localStorage.setItem(
+"currentSnakeSkin",
+currentSkin
+);
+
+saveAdvancedData();
+
+}
+
+
+/* =========================
+   قابلیت فعلی
+========================= */
+
+function getAbility(){
+
+return skinAbilities[currentSkin]
+||skinAbilities.green;
+
+}
+
+
+/* =========================
+   شروع بازی
+========================= */
+
+function restartGame(){
+
+difficulty=
+document.getElementById("difficulty").value;
+
+selectedMap=
+document.getElementById("map").value;
+
+const ability=getAbility();
+
+lives=ability.lives + skills.survival;
+
+snake=[
+{x:10,y:10},
+{x:9,y:10},
+{x:8,y:10}
+];
+
+dx=1;
+dy=0;
+
+score=0;
+gameOver=false;
+survivalSeconds=0;
+shield=false;
+speedBoostUntil=0;
+coinMagnetUntil=0;
+freezeUntil=0;
+doubleFruitUntil=0;
+
+totalGames++;
+missionIncrement("games");
+saveAdvancedData();
+
+obstacles=[];
+bombs=[];
+
+document.getElementById("score").textContent=0;
+
+updateLives();
+
+/* مپ انتخاب‌شده از منوی بازی را حفظ کن.
+   قبلاً اینجا selectedMap دوباره با مپ Campaign جایگزین می‌شد،
+   برای همین هر مپی انتخاب می‌کردی عملاً تغییر نمی‌کرد. */
+selectedMap=document.getElementById("map").value;
+localStorage.setItem("snakeMap",selectedMap);
+
+createObstacles();
+createFruit();
+createCoin();
+
+applyMap();
+setupSpecialMapEffects();
+updateAdventureUI();
+
+let speed=110;
+
+if(difficulty==="easy")
+speed=160;
+
+if(difficulty==="normal")
+speed=110;
+
+if(difficulty==="hard")
+speed=65;
+
+clearInterval(gameLoop);
+
+gameLoop=setInterval(update,speed);
+
+clearInterval(window.survivalTimer);
+window.survivalTimer=setInterval(()=>{
+  if(!gameOver){
+    survivalSeconds++;
+    missionProgress("survive",survivalSeconds);
+    if(survivalSeconds>bestSurvival){
+      bestSurvival=survivalSeconds;
+      saveAdvancedData();
+    }
+    updateStats();
+  }
+},1000);
+
+draw();
+
+}
+
+
+/* =========================
+   نمایش جان
+========================= */
+
+function updateLives(){
+
+const element=
+document.getElementById("lives");
+
+if(lives<=0){
+
+element.textContent="💀";
+
+return;
+
+}
+
+element.textContent=
+"❤️".repeat(lives);
+
+}
+
+
+/* =========================
+   ساخت موانع
+========================= */
+
+function createObstacles(){
+
+let count=7;
+
+if(selectedMap==="volcano")
+count=10;
+
+if(selectedMap==="ice")
+count=8;
+
+if(selectedMap==="space")
+count=12;
+
+if(selectedMap==="desert")
+count=9;
+
+if(difficulty==="easy")
+count=Math.floor(count*.6);
+
+if(difficulty==="hard")
+count+=6;
+
+for(let i=0;i<count;i++){
+
+let position;
+
+do{
+
+position={
+x:Math.floor(Math.random()*tiles),
+y:Math.floor(Math.random()*tiles)
+};
+
+}
+while(isOccupied(position.x,position.y));
+
+obstacles.push(position);
+
+}
+
+
+let bombCount=1;
+
+if(difficulty==="normal")
+bombCount=3;
+
+if(difficulty==="hard")
+bombCount=6;
+
+
+/* در Hard بمب‌ها هم کمی بیشتر می‌شوند */
+
+if(difficulty==="hard")
+bombCount+=2;
+
+
+for(let i=0;i<bombCount;i++){
+
+let position;
+
+do{
+
+position={
+x:Math.floor(Math.random()*tiles),
+y:Math.floor(Math.random()*tiles)
+};
+
+}
+while(
+isOccupied(position.x,position.y)||
+obstacles.some(
+o=>o.x===position.x&&o.y===position.y
+)
+);
+
+bombs.push(position);
+
+}
+
+}
+
+
+/* =========================
+   بررسی اشغال
+========================= */
+
+function isOccupied(x,y){
+
+return snake.some(
+s=>s.x===x&&s.y===y
+);
+
+}
+
+
+/* =========================
+   ساخت میوه
+========================= */
+
+function createFruit(){
+
+let p;
+
+do{
+
+p={
+x:Math.floor(Math.random()*tiles),
+y:Math.floor(Math.random()*tiles)
+};
+
+}
+while(
+isOccupied(p.x,p.y)||
+obstacles.some(o=>o.x===p.x&&o.y===p.y)||
+bombs.some(b=>b.x===p.x&&b.y===p.y)
+);
+
+fruit={
+...p,
+type:
+fruits[
+Math.floor(Math.random()*fruits.length)
+]
+};
+
+}
+
+
+/* =========================
+   ساخت سکه
+========================= */
+
+function createCoin(){
+
+let p;
+
+do{
+
+p={
+x:Math.floor(Math.random()*tiles),
+y:Math.floor(Math.random()*tiles)
+};
+
+}
+while(
+isOccupied(p.x,p.y)||
+obstacles.some(o=>o.x===p.x&&o.y===p.y)||
+bombs.some(b=>b.x===p.x&&b.y===p.y)||
+fruit&&
+(fruit.x===p.x&&fruit.y===p.y)
+);
+
+coin=p;
+
+}
+
+
+/* =========================
+   کنترل
+========================= */
+
+function changeDirection(direction){
+
+if(gameOver)return;
+
+if(direction==="up"&&dy!==1){
+
+dx=0;
+dy=-1;
+
+}
+
+if(direction==="down"&&dy!==-1){
+
+dx=0;
+dy=1;
+
+}
+
+if(direction==="left"&&dx!==1){
+
+dx=-1;
+dy=0;
+
+}
+
+if(direction==="right"&&dx!==-1){
+
+dx=1;
+dy=0;
+
+}
+
+}
+
+
+/* =========================
+   کیبورد
+========================= */
+
+document.addEventListener("keydown",e=>{
+
+if([
+"ArrowUp",
+"ArrowDown",
+"ArrowLeft",
+"ArrowRight"
+].includes(e.key)){
+
+e.preventDefault();
+
+}
+
+if(e.key==="ArrowUp")
+changeDirection("up");
+
+if(e.key==="ArrowDown")
+changeDirection("down");
+
+if(e.key==="ArrowLeft")
+changeDirection("left");
+
+if(e.key==="ArrowRight")
+changeDirection("right");
+
+});
+
+
+/* =========================
+   سوایپ موبایل
+========================= */
+
+let touchStartX=0;
+let touchStartY=0;
+
+canvas.addEventListener(
+"touchstart",
+e=>{
+
+const touch=e.changedTouches[0];
+
+touchStartX=touch.clientX;
+touchStartY=touch.clientY;
+
+},
+{passive:true}
+);
+
+
+canvas.addEventListener(
+"touchend",
+e=>{
+
+const touch=e.changedTouches[0];
+
+const diffX=
+touch.clientX-touchStartX;
+
+const diffY=
+touch.clientY-touchStartY;
+
+const minSwipe=25;
+
+if(
+Math.max(
+Math.abs(diffX),
+Math.abs(diffY)
+)<minSwipe
+)return;
+
+if(
+Math.abs(diffX)>
+Math.abs(diffY)
+){
+
+if(diffX>0)
+changeDirection("right");
+else
+changeDirection("left");
+
+}
+else{
+
+if(diffY>0)
+changeDirection("down");
+else
+changeDirection("up");
+
+}
+
+},
+{passive:true}
+);
+
+
+/* =========================
+   برخورد و کم شدن جان
+========================= */
+
+function loseLife(reason){
+
+lives--;
+
+updateLives();
+
+if(lives<=0){
+
+endGame(reason);
+
+return;
+
+}
+
+
+/* مار دوباره از اول شروع می‌شود */
+
+snake=[
+{x:10,y:10},
+{x:9,y:10},
+{x:8,y:10}
+];
+
+dx=1;
+dy=0;
+
+
+/* اگر محل شروع مانع داشت، یک جای امن پیدا کن */
+
+let safePosition=null;
+
+for(let y=0;y<tiles;y++){
+
+for(let x=0;x<tiles;x++){
+
+if(
+!obstacles.some(
+o=>o.x===x&&o.y===y
+)&&
+!bombs.some(
+b=>b.x===x&&b.y===y
+)
+){
+
+safePosition={x,y};
+break;
+
+}
+
+}
+
+if(safePosition)
+break;
+
+}
+
+
+if(safePosition){
+
+snake=[
+{x:safePosition.x,y:safePosition.y},
+{x:safePosition.x-1,y:safePosition.y},
+{x:safePosition.x-2,y:safePosition.y}
+];
+
+}
+
+
+/* طول مار حداقل ۳ خانه باقی می‌ماند */
+
+showMessage(
+"💔 برخورد کردی! جان باقی‌مانده: "+
+lives
+);
+
+draw();
+
+}
+
+
+/* =========================
+   آپدیت بازی
+========================= */
+
+function update(){
+
+if(gameOver)
+return;
+
+maybeSpawnPowerup();
+updateBoss();
+updateWeather();
+
+const movementFactor=mapMovementFactor();
+if(movementFactor<1 && Math.random()>movementFactor){
+  draw();
+  return;
+}
+
+const head={
+x:snake[0].x+dx,
+y:snake[0].y+dy
+};
+
+
+/* دیوار */
+
+if(
+head.x<0||
+head.x>=tiles||
+head.y<0||
+head.y>=tiles
+){
+
+if(shield){
+  shield=false;
+  showMessage("🛡️ سپر از تو محافظت کرد!");
+}else{
+  totalHits++;
+  loseLife("💥 به دیوار خوردی!");
+}
+return;
+
+}
+
+
+/* خود مار */
+
+if(
+snake.some(
+s=>s.x===head.x&&s.y===head.y
+)
+){
+
+if(shield){
+  shield=false;
+  showMessage("🛡️ سپر از تو محافظت کرد!");
+}else{
+  totalHits++;
+  loseLife("🐍 به خودت خوردی!");
+}
+return;
+
+}
+
+
+/* مانع */
+
+if(
+obstacles.some(
+o=>o.x===head.x&&o.y===head.y
+)
+){
+
+if(shield){
+  shield=false;
+  showMessage("🛡️ سپر از تو محافظت کرد!");
+}else{
+  totalHits++;
+  loseLife("🧱 به مانع خوردی!");
+}
+return;
+
+}
+
+
+/* بمب */
+
+if(
+bombs.some(
+b=>b.x===head.x&&b.y===head.y
+)
+){
+
+if(shield){
+  shield=false;
+  showMessage("🛡️ سپر از تو محافظت کرد!");
+}else{
+  totalHits++;
+  loseLife("💣 بووووم!");
+}
+return;
+
+}
+
+
+snake.unshift(head);
+
+
+/* میوه */
+
+if(
+fruit&&
+head.x===fruit.x&&
+head.y===fruit.y
+){
+
+const fruitPoints=doubleFruitUntil>Date.now()?2:1;
+score+=fruitPoints;
+totalFruits++;
+missionIncrement("fruit");
+if(selectedMap==="forest" && Math.random()<.12)addMaterial("sand",1);
+if(selectedMap==="desert" && Math.random()<.12)addMaterial("sand",1);
+if(selectedMap==="ice" && Math.random()<.12)addMaterial("ice",1);
+if(selectedMap==="volcano" && Math.random()<.12)addMaterial("fire",1);
+if(selectedMap==="space" && Math.random()<.12)addMaterial("meteor",1);
+
+missionProgress("score",score);
+addXP(5*fruitPoints);
+
+document.getElementById(
+"score"
+).textContent=score;
+
+
+if(score>highScore){
+
+highScore=score;
+
+document.getElementById(
+"highScore"
+).textContent=highScore;
+
+saveData();
+
+}
+
+createFruit();
+
+}
+else{
+
+snake.pop();
+
+}
+
+
+/* =========================
+   سیستم چندبرابر شدن سکه
+========================= */
+
+if(
+coin&&
+head.x===coin.x&&
+head.y===coin.y
+){
+
+const ability=getAbility();
+
+/*
+Hard = ×2
+اسکین = ضریب خودش
+
+مثلاً:
+Inferno = ×5
+Hard = ×2
+نتیجه = ×10
+*/
+
+let multiplier=
+ability.coinMultiplier;
+
+if(difficulty==="hard")
+multiplier*=2;
+
+multiplier*=eventMultiplier();
+multiplier+=Math.floor(multiplier*skills.economy*.10);
+
+if(coinMagnetUntil>Date.now())
+  multiplier+=1;
+
+
+/* سکه اضافه */
+
+coins+=multiplier;
+totalCoins+=multiplier;
+missionIncrement("coins",multiplier);
+addXP(4*multiplier);
+
+document.getElementById(
+"coins"
+).textContent=coins;
+
+saveData();
+
+createCoin();
+
+showMessage(
+"🪙 +"+multiplier+" سکه!"
+);
+
+}
+
+/* جمع کردن Power-up */
+if(powerupItem && head.x===powerupItem.x && head.y===powerupItem.y){
+  collectPowerup();
+}
+
+if(mysteryChest && head.x===mysteryChest.x && head.y===mysteryChest.y){
+  collectMysteryChest();
+}
+
+if(boss && boss.active && head.x===boss.x && head.y===boss.y){
+  damageBoss();
+}
+
+draw();
+
+}
+
+
+/* =========================
+   رسم بازی
+========================= */
+
+function draw(){
+
+const theme=
+mapColors[selectedMap];
+
+ctx.clearRect(
+0,
+0,
+500,
+500
+);
+
+ctx.fillStyle=
+theme.background;
+
+ctx.fillRect(
+0,
+0,
+500,
+500
+);
+
+
+/* Grid */
+
+ctx.strokeStyle=
+"rgba(255,255,255,.035)";
+
+for(let i=0;i<=tiles;i++){
+
+ctx.beginPath();
+
+ctx.moveTo(
+i*grid,
+0
+);
+
+ctx.lineTo(
+i*grid,
+500
+);
+
+ctx.stroke();
+
+
+ctx.beginPath();
+
+ctx.moveTo(
+0,
+i*grid
+);
+
+ctx.lineTo(
+500,
+i*grid
+);
+
+ctx.stroke();
+
+}
+
+
+/* موانع مخصوص هر مپ */
+
+obstacles.forEach(o=>{
+
+const x=o.x*grid;
+const y=o.y*grid;
+
+ctx.save();
+ctx.textAlign="center";
+ctx.textBaseline="middle";
+
+if(selectedMap==="forest"){
+
+  /* 🌲 جنگل: کنده و سنگ */
+  ctx.fillStyle="#385c42";
+  ctx.beginPath();
+  ctx.roundRect(x+3,y+5,grid-6,grid-10,7);
+  ctx.fill();
+
+  ctx.fillStyle="#6b4528";
+  ctx.fillRect(x+7,y+7,grid-14,grid-14);
+
+  ctx.font="15px Arial";
+  ctx.fillText("🪵",x+grid/2,y+grid/2);
+
+}
+else if(selectedMap==="volcano"){
+
+  /* 🌋 آتشفشان: سنگ آتشفشانی */
+  ctx.fillStyle="#63322b";
+  ctx.beginPath();
+  ctx.moveTo(x+4,y+19);
+  ctx.lineTo(x+8,y+7);
+  ctx.lineTo(x+16,y+4);
+  ctx.lineTo(x+22,y+11);
+  ctx.lineTo(x+19,y+21);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle="#ff5b32";
+  ctx.shadowColor="#ff3b00";
+  ctx.shadowBlur=10;
+  ctx.beginPath();
+  ctx.arc(x+12,y+11,2.5,0,Math.PI*2);
+  ctx.arc(x+18,y+16,2,0,Math.PI*2);
+  ctx.fill();
+
+}
+else if(selectedMap==="ice"){
+
+  /* ❄️ یخی: تکه یخ */
+  ctx.fillStyle="#487b99";
+  ctx.shadowColor="#66ddff";
+  ctx.shadowBlur=8;
+  ctx.beginPath();
+  ctx.moveTo(x+5,y+19);
+  ctx.lineTo(x+8,y+7);
+  ctx.lineTo(x+15,y+4);
+  ctx.lineTo(x+22,y+9);
+  ctx.lineTo(x+19,y+21);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.strokeStyle="#bdf4ff";
+  ctx.lineWidth=1.5;
+  ctx.stroke();
+
+}
+else if(selectedMap==="space"){
+
+  /* 🌌 فضا: شهاب سنگ */
+  ctx.fillStyle="#45406b";
+  ctx.shadowColor="#9c6cff";
+  ctx.shadowBlur=10;
+  ctx.beginPath();
+  ctx.moveTo(x+4,y+17);
+  ctx.lineTo(x+8,y+6);
+  ctx.lineTo(x+17,y+4);
+  ctx.lineTo(x+22,y+11);
+  ctx.lineTo(x+18,y+21);
+  ctx.lineTo(x+8,y+20);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle="#25223f";
+  ctx.beginPath();
+  ctx.arc(x+11,y+11,2.5,0,Math.PI*2);
+  ctx.arc(x+17,y+16,2,0,Math.PI*2);
+  ctx.fill();
+
+}
+else if(selectedMap==="desert"){
+
+  /* 🏜️ کویر: کاکتوس */
+  ctx.fillStyle="#79552b";
+  ctx.fillRect(x+10,y+7,5,15);
+  ctx.fillRect(x+5,y+12,5,4);
+  ctx.fillRect(x+5,y+9,4,5);
+  ctx.fillRect(x+15,y+15,5,4);
+  ctx.fillRect(x+17,y+11,4,7);
+
+  ctx.fillStyle="#a87936";
+  ctx.fillRect(x+11,y+7,2,13);
+
+}
+
+ctx.restore();
+
+});
+
+
+/* بمب */
+
+bombs.forEach(b=>{
+
+ctx.font="20px Arial";
+
+ctx.textAlign="center";
+ctx.textBaseline="middle";
+
+ctx.shadowColor="#ff3030";
+
+ctx.shadowBlur=14;
+
+ctx.fillText(
+"💣",
+b.x*grid+grid/2,
+b.y*grid+grid/2
+);
+
+ctx.shadowBlur=0;
+
+});
+
+
+/* میوه */
+
+if(fruit){
+
+ctx.font="24px Arial";
+
+ctx.textAlign="center";
+
+ctx.fillText(
+fruit.type,
+fruit.x*grid+grid/2,
+fruit.y*grid+grid/2+1
+);
+
+}
+
+
+/* سکه */
+
+if(coin){
+
+const x=
+coin.x*grid+grid/2;
+
+const y=
+coin.y*grid+grid/2;
+
+ctx.beginPath();
+
+ctx.arc(
+x,
+y,
+9+
+Math.sin(animationTime/100)*2,
+0,
+Math.PI*2
+);
+
+ctx.fillStyle="#ffd43b";
+
+ctx.shadowColor="#ffd43b";
+
+ctx.shadowBlur=18;
+
+ctx.fill();
+
+ctx.shadowBlur=0;
+
+ctx.fillStyle="#795900";
+
+ctx.font="bold 11px Arial";
+
+
+ctx.fillText(
+"★",
+x,
+y+1
+);
+
+}
+
+/* Power-up */
+if(powerupItem){
+  const px=powerupItem.x*grid+grid/2;
+  const py=powerupItem.y*grid+grid/2;
+  ctx.font="22px Arial";
+  ctx.shadowColor="#ffffff";
+  ctx.shadowBlur=14+Math.sin(animationTime/80)*4;
+  ctx.fillText(powerupItem.emoji,px,py);
+  ctx.shadowBlur=0;
+}
+
+drawAdventureObjects();
+
+/* موانع متحرک مخصوص رویداد فضایی */
+if(activeEvent && activeEvent.type==="meteors" && Date.now()<activeEvent.until){
+  ctx.font="16px Arial";
+  ctx.fillText("☄️",((animationTime/45)%tiles)*grid,60);
+}
+
+
+
+/* مار */
+
+snake.forEach((part,index)=>{
+
+const x=part.x*grid;
+const y=part.y*grid;
+
+const palette=
+skinColors[currentSkin];
+
+let color;
+
+if(currentSkin==="rainbow"){
+
+color=
+palette[
+(
+index+
+Math.floor(animationTime/150)
+)%palette.length
+];
+
+}
+else{
+
+color=
+index%2===0
+?palette[0]
+:palette[1];
+
+}
+
+
+ctx.beginPath();
+
+ctx.roundRect(
+x+2,
+y+2,
+grid-4,
+grid-4,
+8
+);
+
+ctx.fillStyle=color;
+
+ctx.shadowColor=color;
+
+ctx.shadowBlur=
+currentSkin==="blackgold"||
+currentSkin==="galaxy"||
+currentSkin==="inferno"
+?15
+:index===0?18:5;
+
+ctx.fill();
+
+ctx.shadowBlur=0;
+
+
+/* Galaxy */
+
+if(
+currentSkin==="galaxy"&&
+index%3===0
+){
+
+ctx.fillStyle="#fff";
+
+ctx.beginPath();
+
+ctx.arc(
+x+8,
+y+8,
+1.5,
+0,
+Math.PI*2
+);
+
+ctx.fill();
+
+}
+
+
+/* Inferno */
+
+if(
+currentSkin==="inferno"&&
+index%2===0
+){
+
+ctx.fillStyle="#ffd43b";
+
+ctx.globalAlpha=.7;
+
+ctx.fillRect(
+x+6,
+y+17,
+grid-12,
+3
+);
+
+ctx.globalAlpha=1;
+
+}
+
+});
+
+
+/* چشم‌ها */
+
+if(snake.length){
+
+const head=
+snake[0];
+
+ctx.fillStyle="white";
+
+let eyes;
+
+
+if(dx!==0){
+
+eyes=[
+
+{
+x:
+head.x*grid+
+(dx===1?17:8),
+
+y:
+head.y*grid+8
+},
+
+{
+x:
+head.x*grid+
+(dx===1?17:8),
+
+y:
+head.y*grid+17
+}
+
+];
+
+}
+else{
+
+eyes=[
+
+{
+x:
+head.x*grid+8,
+
+y:
+head.y*grid+
+(dy===1?17:8)
+},
+
+{
+x:
+head.x*grid+17,
+
+y:
+head.y*grid+
+(dy===1?17:8)
+}
+
+];
+
+}
+
+
+eyes.forEach(e=>{
+
+ctx.beginPath();
+
+ctx.arc(
+e.x,
+e.y,
+3,
+0,
+Math.PI*2
+);
+
+ctx.fill();
+
+});
+
+}
+
+
+animationTime+=16;
+
+if(!gameOver){
+
+requestAnimationFrame(draw);
+
+}
+
+}
+
+
+/* =========================
+   اعمال مپ
+========================= */
+
+function applyMap(){
+
+const theme=
+mapColors[selectedMap];
+
+canvas.style.borderColor=
+theme.border;
+
+canvas.style.boxShadow=
+"0 0 30px "+theme.glow;
+
+}
+
+
+
+function checkSecretUnlocks(){
+  const secrets=[];
+  if(highScore>=100 && !unlocked.includes("king")){
+    unlocked.push("king"); secrets.push("👑 King Snake");
+  }
+  if(totalGames>=10 && !unlocked.includes("ghost")){
+    unlocked.push("ghost"); secrets.push("👻 Ghost");
+  }
+  if(totalCoins>=1000 && !unlocked.includes("solar")){
+    unlocked.push("solar"); secrets.push("☀️ Solar");
+  }
+  if(xp>=2500 && !unlocked.includes("void")){
+    unlocked.push("void"); secrets.push("🌑 Void");
+  }
+  if(secrets.length){
+    saveData();
+    showMessage("🔓 باز شد: "+secrets.join("، "));
+  }
+}
+
+/* =========================
+   پایان بازی
+========================= */
+
+function endGame(reason){
+
+gameOver=true;
+
+clearInterval(gameLoop);
+clearInterval(window.survivalTimer);
+if(survivalSeconds>bestSurvival)bestSurvival=survivalSeconds;
+saveAdvancedData();
+updateStats();
+
+ctx.fillStyle=
+"rgba(0,0,0,.78)";
+
+ctx.fillRect(
+0,
+0,
+500,
+500
+);
+
+ctx.textAlign="center";
+
+ctx.fillStyle="#ff4d6d";
+
+ctx.font=
+"bold 38px Tahoma";
+
+ctx.fillText(
+"GAME OVER",
+250,
+190
+);
+
+ctx.fillStyle="white";
+
+ctx.font="18px Tahoma";
+
+ctx.fillText(
+reason,
+250,
+230
+);
+
+ctx.fillStyle="#ff7187";
+
+ctx.font="17px Tahoma";
+
+ctx.fillText(
+"❤️ جان‌ها تمام شد!",
+250,
+265
+);
+
+ctx.fillStyle="#ffd43b";
+
+ctx.font="19px Tahoma";
+
+ctx.fillText(
+"🍎 امتیاز: "+score,
+250,
+300
+);
+
+ctx.fillText(
+"🪙 سکه: "+coins,
+250,
+330
+);
+
+ctx.font="15px Tahoma";
+
+ctx.fillStyle="#a8ffc3";
+
+ctx.fillText(
+"برای شروع دوباره روی 🎮 شروع بزن",
+250,
+370
+);
+
+}
+
+
+/* =========================
+   فروشگاه
+========================= */
+
+function toggleShop(){
+
+const shop=
+document.getElementById("shop");
+
+shop.style.display=
+shop.style.display==="block"
+?"none"
+:"block";
+
+updateShop();
+
+}
+
+
+function buySkin(skin,price){
+
+if(unlocked.includes(skin)){
+
+currentSkin=skin;
+
+saveData();
+
+showMessage(
+"🐍 اسکین انتخاب شد!"
+);
+
+updateShop();
+
+return;
+
+}
+
+
+if(["king","ghost","solar","void"].includes(skin) && !unlocked.includes(skin)){
+  showMessage("🔒 این اسکین هنوز باز نشده!");
+  return;
+}
+
+if(coins<price){
+
+showMessage(
+"❌ سکه کافی نداری!"
+);
+
+return;
+
+}
+
+
+coins-=price;
+
+unlocked.push(skin);
+
+currentSkin=skin;
+
+saveData();
+
+document.getElementById(
+"coins"
+).textContent=coins;
+
+showMessage(
+"🎉 اسکین جدید باز شد!"
+);
+
+updateShop();
+
+}
+
+
+function selectSkin(skin){
+
+if(unlocked.includes(skin)){
+
+currentSkin=skin;
+
+saveData();
+
+showMessage(
+"✨ اسکین انتخاب شد!"
+);
+
+updateShop();
+
+}
+
+}
+
+
+/* =========================
+   بروزرسانی فروشگاه
+========================= */
+
+function updateShop(){
+
+const skins=[
+
+["red",20,"redBtn"],
+["blue",50,"blueBtn"],
+["yellow",100,"yellowBtn"],
+["blackgold",250,"blackgoldBtn"],
+["redshadow",300,"redshadowBtn"],
+["cyber",350,"cyberBtn"],
+["toxic",400,"toxicBtn"],
+["ice",450,"iceBtn"],
+["rainbow",500,"rainbowBtn"],
+["galaxy",750,"galaxyBtn"],
+["inferno",1000,"infernoBtn"],
+["king",0,"kingBtn"],
+["ghost",0,"ghostBtn"],
+["solar",0,"solarBtn"],
+["void",0,"voidBtn"]
+
+];
+
+
+skins.forEach(item=>{
+
+const skin=item[0];
+
+const price=item[1];
+
+const button=
+document.getElementById(item[2]);
+
+if(!button)
+return;
+
+
+if(unlocked.includes(skin)){
+
+button.textContent=
+currentSkin===skin
+?"انتخاب شده ✓"
+:"انتخاب";
+
+}
+else{
+
+button.textContent=
+"خرید 🪙 "+price;
+
+}
+
+});
+
+}
+
+
+/* =========================
+   پیام
+========================= */
+
+function showMessage(text){
+
+const message=
+document.getElementById("message");
+
+message.textContent=text;
+
+clearTimeout(
+window.msgTimer
+);
+
+window.msgTimer=
+setTimeout(
+()=>{
+message.textContent="";
+},
+1800
+);
+
+}
+
+
+/* =========================
+   جلوگیری از زوم
+========================= */
+
+let lastTouch=0;
+
+document.addEventListener(
+"touchend",
+function(e){
+
+const now=Date.now();
+
+if(now-lastTouch<=300){
+
+e.preventDefault();
+
+}
+
+lastTouch=now;
+
+},
+{passive:false}
+);
+
+
+/* =========================
+   شروع اولیه
+========================= */
+
+ensureDailyMissions();
+updateDailyReward();
+updateLevelUI();
+updateStats();
+updateAdventureUI();
+
+const savedMap=localStorage.getItem("snakeMap");
+const mapSelect=document.getElementById("map");
+if(savedMap && mapSelect && [...mapSelect.options].some(o=>o.value===savedMap)){
+  mapSelect.value=savedMap;
+  selectedMap=savedMap;
+}
+
+restartGame();
+
+updateShop();
+
+</script>
+
+</body>
+</html>
